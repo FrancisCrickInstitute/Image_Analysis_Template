@@ -4,7 +4,7 @@
 
 This is `CALM_Template`, a **GitHub template repository** maintained by the Francis Crick Institute. Its purpose is to give researchers a starting point for publishing reusable image-analysis code (ImageJ/FIJI macros, CellProfiler pipelines, ilastik projects, Jupyter notebooks, Python/MATLAB scripts, etc.).
 
-It is **not** a conventional application. There is no build system, test suite, package, framework, CI pipeline, or source code beyond a single demo notebook. Agents should treat it as documentation + a working example, not as software to extend with feature logic.
+It is **not** a conventional application. There is no build system, test suite, package, framework, or source code beyond a single demo notebook. There is one optional GitHub Actions workflow for Trello integration. Agents should treat it as documentation + a working example, not as software to extend with feature logic.
 
 The only functional artifact is `segment_image.ipynb`: it reads a grayscale TIF, applies Otsu thresholding, displays the original vs. binary image, and saves the binary result as a PNG.
 
@@ -30,7 +30,9 @@ The only functional artifact is `segment_image.ipynb`: it reads a grayscale TIF,
 
 ## Environment and Dependencies
 
-The project now manages its environment with [Pixi](https://pixi.sh) rather than plain conda/pip. `pixi.toml` is the source of truth:
+The project supports **two environment toolchains side by side** — Pixi and conda/pip. Do not remove either one.
+
+### Pixi (`pixi.toml`)
 
 - **Python `>=3.14.7,<3.15`** via the `conda-forge` channel.
 - Conda deps: `pixi-pycharm` (pulling in a bundled PyCharm for editing the notebook).
@@ -38,33 +40,40 @@ The project now manages its environment with [Pixi](https://pixi.sh) rather than
 - `pixi.lock` is a generated lockfile (marked as generated/binary in `.gitattributes`); never hand-edit it.
 - `pixi.toml` declares `platforms = ["win-64"]` — the environment is currently Windows-only in practice.
 
-- `requirements.txt` is the conda/pip install path and lists `matplotlib`, `scikit-image`, and `jupyter`.
+### conda/pip (`requirements.txt`)
 
-`requirements.txt` exists as the conda/pip install path and lists `matplotlib`, `scikit-image`, and `jupyter`. Both environment toolchains are supported side by side — Pixi (`pixi.toml`) and conda + `requirements.txt` — so do not remove either one. The README should document both options.
+- Lists `matplotlib`, `scikit-image`, and `jupyter`.
+- Targets the same Python 3.14 (see the README badge).
 
-Do not add runtime dependencies casually; the template is meant to stay lightweight. If a dependency is genuinely needed, add it to the correct section of `pixi.toml` (`[dependencies]` for conda, `[pypi-dependencies]` for pip) and regenerate `pixi.lock`.
+Do not add runtime dependencies casually; the template is meant to stay lightweight. If a dependency is genuinely needed, add it to both manifests: the correct section of `pixi.toml` (`[dependencies]` for conda, `[pypi-dependencies]` for pip) plus `requirements.txt`, then regenerate `pixi.lock`.
 
 ## Key Commands
 
-There are no build, test, or lint commands. The workflow is interactive Jupyter, run inside the Pixi environment:
+There is no build, test, or lint suite. The workflow is interactive Jupyter, launched from the repo root (see paths note below).
+
+### Pixi
 
 ```bash
-# Install dependencies into the Pixi environment (first time / after pixi.toml changes)
-pixi install
-
-# Launch the notebook (must be run from the repo root; see paths note below)
-pixi run jupyter notebook segment_image.ipynb
-
-# Run any task defined in the [tasks] table of pixi.toml (none defined yet)
-pixi run <task>
+pixi install                                    # install deps (first time / after pixi.toml changes)
+pixi run jupyter notebook segment_image.ipynb   # launch the notebook
+pixi run <task>                                 # run a task from pixi.toml [tasks] (none defined yet)
 ```
 
-The README's conda instructions (`conda create --name calm_template ...`) are stale and predate the Pixi migration. The notebook is also runnable via Binder (link in the README badge).
+### conda
+
+```bash
+conda create --name calm_template pip
+conda activate calm_template
+python -m pip install -r requirements.txt
+jupyter notebook segment_image.ipynb
+```
+
+The notebook is also runnable via Binder (link in the README badge), which uses `requirements.txt`, not Pixi.
 
 ## Conventions and Gotchas
 
-- **Environment is Python 3.14** (Pixi, `conda-forge`), matching the README badge and `requirements.txt` path.
-- **Two supported environment toolchains coexist**: Pixi (`pixi.toml` + `pixi.lock`) and conda + `requirements.txt`. Both target **Python 3.14** (see the badge); do not remove either one.
+- **Python 3.14 across both toolchains** (Pixi `conda-forge` and conda/`requirements.txt`), matching the README badge.
+- **Two supported environment toolchains coexist**: Pixi (`pixi.toml` + `pixi.lock`) and conda + `requirements.txt`. Both are intentional; do not remove either one.
 - **Notebook paths are relative to the working directory**, not the notebook location: `./test_data/input/test_input.tif` and `./test_data/output/test_output.png`. The notebook must be launched from the repo root for these paths to resolve.
 
 ## Guidance for Editing Notebooks
