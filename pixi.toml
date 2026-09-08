@@ -1,0 +1,19 @@
+[workspace]
+authors = ["Dave Barry <david.barry@crick.ac.uk>"]
+channels = ["conda-forge"]
+name = "CALM_Template"
+platforms = ["win-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+python = ">=3.14.7,<3.15"
+
+[pypi-dependencies]
+matplotlib = ">=3.11.1, <4"
+scikit-image = ">=0.26.0, <0.27"
+jupyter = ">=1.1.1, <2"
+
+[environments]
+template = ["default"]
