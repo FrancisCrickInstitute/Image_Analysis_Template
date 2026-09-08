@@ -87,8 +87,7 @@ Known issues to resolve when cleaning up this repository (each is already flagge
 
 - [x] **Fix stale README step** — Step 3 of the README references `zebrafish_age_estimator.ipynb`, which does not exist. Point it at `segment_image.ipynb` (matching the Binder link and every other reference).
 - [x] **Add a `.gitignore`** — covers `.pixi/*`; `.idea/` and `.crush/` have their own per-directory ignore files.
-- [ ] **Document the Pixi path in the README** — add Pixi (`pixi install` / `pixi run jupyter notebook ...`) alongside the existing conda steps so both toolchains are covered.
-- [ ] **Add a Pixi section/mention to the README** — the README currently covers conda only; Pixi is undocumented for end users.
+- [x] **Document the Pixi path in the README** — added a "Use Pixi instead of conda" alternative section with `pixi install` / `pixi run jupyter notebook ...`.
 - [ ] **Keep `requirements.txt` and Pixi in sync** — `requirements.txt` is missing `jupyter` (which Pixi provides). If both remain supported paths, decide whether `requirements.txt` should also list `jupyter` (both now target Python 3.14).
 - [ ] **Verify Binder still works** — the badge/links depend on the cell IDs and notebook path; Binder uses `requirements.txt` (not Pixi), so any change to it must keep `matplotlib` + `scikit-image` + (implicitly) a notebook kernel working.
 - [ ] **Align test-data convention** — confirm `test_data/output/test_output.png` still matches what the notebook produces after any functional changes (README calls out this input/output pairing as a core requirement).

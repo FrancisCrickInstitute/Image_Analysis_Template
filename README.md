@@ -102,6 +102,18 @@ jupyter notebook <path to this repo>/segment_image.ipynb
 
 The Jupyter Notebook should open in your browser - follow the step-by-step instructions in the notebook to run the code. If you are not familiar with Jupyter Notebooks, you can find a detailed introduction [here](https://jupyter-notebook.readthedocs.io/en/latest/notebook.html#introduction).
 
+### (Alternative) Step 1–3
+#### Use Pixi instead of conda
+
+If you prefer, you can manage the environment with [Pixi](https://pixi.sh) instead of conda. This repo ships a `pixi.toml` that pins the same dependencies (plus `jupyter`) on Python 3.14. After installing [Pixi](https://pixi.sh/latest/#installation), run:
+
+```
+pixi install
+pixi run jupyter notebook segment_image.ipynb
+```
+
+`pixi install` creates the environment and installs all dependencies. `pixi run ...` executes commands inside that environment, so no manual `activate` step is needed.
+
 ### (Optional) Step 4
 #### Set up your repo to run on Binder
 
