@@ -13,7 +13,9 @@ The only functional artifact is `segment_image.ipynb`: it reads a grayscale TIF,
 ```
 .
 ├── README.md                 # Primary documentation; describes purpose and setup steps
-├── requirements.txt          # Only two packages: matplotlib, scikit-image
+├── pixi.toml                 # Pixi workspace: env, dependencies, tasks (Python 3.14)
+├── pixi.lock                 # Lockfile (auto-generated; do not edit by hand)
+├── requirements.txt          # conda/pip install path (matplotlib, scikit-image)
 ├── segment_image.ipynb       # The single demo notebook (the "main" code)
 ├── resources/                # Embedded screenshots used by README
 │   ├── New_Repo.png
@@ -26,30 +28,44 @@ The only functional artifact is `segment_image.ipynb`: it reads a grayscale TIF,
 └── AGENTS.md                 # This file
 ```
 
+## Environment and Dependencies
+
+The project now manages its environment with [Pixi](https://pixi.sh) rather than plain conda/pip. `pixi.toml` is the source of truth:
+
+- **Python `>=3.14.7,<3.15`** via the `conda-forge` channel.
+- Conda deps: `pixi-pycharm` (pulling in a bundled PyCharm for editing the notebook).
+- PyPI deps: `matplotlib`, `scikit-image`, `jupyter`.
+- `pixi.lock` is a generated lockfile (marked as generated/binary in `.gitattributes`); never hand-edit it.
+- `pixi.toml` declares `platforms = ["win-64"]` — the environment is currently Windows-only in practice.
+
+- `requirements.txt` is the conda/pip install path and lists `matplotlib` and `scikit-image` only (no `jupyter`). It remains an intentional, supported alternative to Pixi for users who prefer conda.
+
+`requirements.txt` exists as the conda/pip install path and lists only `matplotlib` and `scikit-image` (it does not include `jupyter`). Both environment toolchains are supported side by side — Pixi (`pixi.toml`) and conda + `requirements.txt` — so do not remove either one. The README should document both options.
+
+Do not add runtime dependencies casually; the template is meant to stay lightweight. If a dependency is genuinely needed, add it to the correct section of `pixi.toml` (`[dependencies]` for conda, `[pypi-dependencies]` for pip) and regenerate `pixi.lock`.
+
 ## Key Commands
 
-There are no build, test, or lint commands. The workflow is interactive Jupyter:
+There are no build, test, or lint commands. The workflow is interactive Jupyter, run inside the Pixi environment:
 
 ```bash
-# One-time environment setup (per README)
-conda create --name calm_template pip
-conda activate calm_template
-python -m pip install -r requirements.txt
+# Install dependencies into the Pixi environment (first time / after pixi.toml changes)
+pixi install
 
-# Run the notebook
-conda activate calm_template
-jupyter notebook segment_image.ipynb
+# Launch the notebook (must be run from the repo root; see paths note below)
+pixi run jupyter notebook segment_image.ipynb
+
+# Run any task defined in the [tasks] table of pixi.toml (none defined yet)
+pixi run <task>
 ```
 
-The notebook is also runnable via Binder (link in the README badge).
+The README's conda instructions (`conda create --name calm_template ...`) are stale and predate the Pixi migration. The notebook is also runnable via Binder (link in the README badge).
 
 ## Conventions and Gotchas
 
-- **Environment is Python 3.11** with `conda` as the recommended distribution. The environment name used throughout the README is `calm_template`.
-- **Dependencies are deliberately minimal** (`requirements.txt` has exactly `matplotlib` and `scikit-image`). Do not add runtime dependencies casually; the template is meant to stay lightweight.
-- **Notebook paths are relative to the working directory**, not the notebook location: `./test_data/input/test_input.tif` and `./test_data/output/test_output.png`. `jupyter notebook segment_image.ipynb` must be launched from the repo root for these paths to resolve.
-- **The notebook's `language_info` metadata is stale**: it reports Python `2.7.6` and `ipython2`, while the project actually targets Python 3.11. This is a known inconsistency in the template; do not "fix" it unless asked, and do not infer the intended Python version from that metadata field.
-- **The README references `zebrafish_age_estimator.ipynb`** in Step 3, but the actual file in the repo is `segment_image.ipynb`. The Binder link and the rest of the README correctly point to `segment_image.ipynb`; the Step 3 code block is stale.
+- **Environment is Python 3.14** (Pixi, `conda-forge`), matching the README badge and `requirements.txt` path.
+- **Two supported environment toolchains coexist**: Pixi (`pixi.toml` + `pixi.lock`) and conda + `requirements.txt`. Both target **Python 3.14** (see the badge); do not remove either one.
+- **Notebook paths are relative to the working directory**, not the notebook location: `./test_data/input/test_input.tif` and `./test_data/output/test_output.png`. The notebook must be launched from the repo root for these paths to resolve.
 
 ## Guidance for Editing Notebooks
 
@@ -62,7 +78,7 @@ The notebook is also runnable via Binder (link in the README badge).
 - This repo is meant to be **forked via GitHub's "Use this template"**, so changes should keep it generic and reusable as a starting point, not tailored to any single paper or analysis.
 - The README is the source of truth for the repository's stated purpose (community-developed publishing checklists — see the cited Schmied et al., *Nat Methods* 2023). Preserve its structure and links when editing.
 - The `resources/` screenshots are referenced by relative paths in the README; keep them in sync with any README restructuring.
-- The repository has no `.gitignore` and no package metadata beyond `requirements.txt`.
+- `.gitignore` covers `.pixi/*` (Pixi environments/cache). `.pixi/` additionally carries its own ignore file. `.idea/` and `.crush/` are covered by their own per-directory ignore files.
 - **Trello integration** (`.github/workflows/trello.yml`) uses the `dalezak/github-commit-to-trello-card` action. It links commits/PRs to Trello cards via a `#<card-number>` pattern in the commit message. It requires three repository secrets — `TRELLO_KEY`, `TRELLO_TOKEN`, `TRELLO_BOARD` — which are per-user and never committed. The workflow will fail on `push` until those secrets exist, so its absence is expected in a fresh fork.
 
 ## Repo Cleanup To-Do
@@ -70,8 +86,9 @@ The notebook is also runnable via Binder (link in the README badge).
 Known issues to resolve when cleaning up this repository (each is already flagged above, consolidated here as a checklist):
 
 - [x] **Fix stale README step** — Step 3 of the README references `zebrafish_age_estimator.ipynb`, which does not exist. Point it at `segment_image.ipynb` (matching the Binder link and every other reference).
-- [x] **Refresh notebook `language_info` metadata** — `segment_image.ipynb` currently reports Python `2.7.6` / `ipython2` / `pygments_lexer ipython2`. Update to reflect Python 3.11 (target environment per README).
-- [ ] **Add a `.gitignore`** — none exists. At minimum ignore Python artifacts (`__pycache__/`, `*.pyc`) and Jupyter runtime caches (`.ipynb_checkpoints/`). Note `.idea/` and `.crush/` are already covered by their own per-directory ignore files.
-- [ ] **Pin `requirements.txt` versions** — currently unpinned (`matplotlib`, `scikit-image`). Consider pinning to known-good versions for reproducible Binder launches.
-- [ ] **Verify Binder still works** — the badge/links depend on the cell IDs and notebook path; re-run after metadata and README edits.
+- [x] **Add a `.gitignore`** — covers `.pixi/*`; `.idea/` and `.crush/` have their own per-directory ignore files.
+- [ ] **Document the Pixi path in the README** — add Pixi (`pixi install` / `pixi run jupyter notebook ...`) alongside the existing conda steps so both toolchains are covered.
+- [ ] **Add a Pixi section/mention to the README** — the README currently covers conda only; Pixi is undocumented for end users.
+- [ ] **Keep `requirements.txt` and Pixi in sync** — `requirements.txt` is missing `jupyter` (which Pixi provides). If both remain supported paths, decide whether `requirements.txt` should also list `jupyter` (both now target Python 3.14).
+- [ ] **Verify Binder still works** — the badge/links depend on the cell IDs and notebook path; Binder uses `requirements.txt` (not Pixi), so any change to it must keep `matplotlib` + `scikit-image` + (implicitly) a notebook kernel working.
 - [ ] **Align test-data convention** — confirm `test_data/output/test_output.png` still matches what the notebook produces after any functional changes (README calls out this input/output pairing as a core requirement).
