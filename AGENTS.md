@@ -15,7 +15,7 @@ The only functional artifact is `segment_image.ipynb`: it reads a grayscale TIF,
 ├── README.md                 # Primary documentation; describes purpose and setup steps
 ├── pixi.toml                 # Pixi workspace: env, dependencies, tasks (Python 3.14)
 ├── pixi.lock                 # Lockfile (auto-generated; do not edit by hand)
-├── requirements.txt          # conda/pip install path (matplotlib, scikit-image)
+├── requirements.txt          # conda/pip install path (matplotlib, scikit-image, jupyter)
 ├── segment_image.ipynb       # The single demo notebook (the "main" code)
 ├── resources/                # Embedded screenshots used by README
 │   ├── New_Repo.png
@@ -38,9 +38,9 @@ The project now manages its environment with [Pixi](https://pixi.sh) rather than
 - `pixi.lock` is a generated lockfile (marked as generated/binary in `.gitattributes`); never hand-edit it.
 - `pixi.toml` declares `platforms = ["win-64"]` — the environment is currently Windows-only in practice.
 
-- `requirements.txt` is the conda/pip install path and lists `matplotlib` and `scikit-image` only (no `jupyter`). It remains an intentional, supported alternative to Pixi for users who prefer conda.
+- `requirements.txt` is the conda/pip install path and lists `matplotlib`, `scikit-image`, and `jupyter`.
 
-`requirements.txt` exists as the conda/pip install path and lists only `matplotlib` and `scikit-image` (it does not include `jupyter`). Both environment toolchains are supported side by side — Pixi (`pixi.toml`) and conda + `requirements.txt` — so do not remove either one. The README should document both options.
+`requirements.txt` exists as the conda/pip install path and lists `matplotlib`, `scikit-image`, and `jupyter`. Both environment toolchains are supported side by side — Pixi (`pixi.toml`) and conda + `requirements.txt` — so do not remove either one. The README should document both options.
 
 Do not add runtime dependencies casually; the template is meant to stay lightweight. If a dependency is genuinely needed, add it to the correct section of `pixi.toml` (`[dependencies]` for conda, `[pypi-dependencies]` for pip) and regenerate `pixi.lock`.
 
@@ -88,6 +88,6 @@ Known issues to resolve when cleaning up this repository (each is already flagge
 - [x] **Fix stale README step** — Step 3 of the README references `zebrafish_age_estimator.ipynb`, which does not exist. Point it at `segment_image.ipynb` (matching the Binder link and every other reference).
 - [x] **Add a `.gitignore`** — covers `.pixi/*`; `.idea/` and `.crush/` have their own per-directory ignore files.
 - [x] **Document the Pixi path in the README** — added a "Use Pixi instead of conda" alternative section with `pixi install` / `pixi run jupyter notebook ...`.
-- [ ] **Keep `requirements.txt` and Pixi in sync** — `requirements.txt` is missing `jupyter` (which Pixi provides). If both remain supported paths, decide whether `requirements.txt` should also list `jupyter` (both now target Python 3.14).
+- [x] **Keep `requirements.txt` and Pixi in sync** — added `jupyter` to `requirements.txt` so the conda path no longer hits `jupyter: command not found`.
 - [ ] **Verify Binder still works** — the badge/links depend on the cell IDs and notebook path; Binder uses `requirements.txt` (not Pixi), so any change to it must keep `matplotlib` + `scikit-image` + (implicitly) a notebook kernel working.
 - [ ] **Align test-data convention** — confirm `test_data/output/test_output.png` still matches what the notebook produces after any functional changes (README calls out this input/output pairing as a core requirement).
