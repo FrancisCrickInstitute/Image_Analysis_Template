@@ -89,5 +89,5 @@ Known issues to resolve when cleaning up this repository (each is already flagge
 - [x] **Add a `.gitignore`** — covers `.pixi/*`; `.idea/` and `.crush/` have their own per-directory ignore files.
 - [x] **Document the Pixi path in the README** — added a "Use Pixi instead of conda" alternative section with `pixi install` / `pixi run jupyter notebook ...`.
 - [x] **Keep `requirements.txt` and Pixi in sync** — added `jupyter` to `requirements.txt` so the conda path no longer hits `jupyter: command not found`.
-- [ ] **Verify Binder still works** — the badge/links depend on the cell IDs and notebook path; Binder uses `requirements.txt` (not Pixi), so any change to it must keep `matplotlib` + `scikit-image` + (implicitly) a notebook kernel working.
-- [ ] **Align test-data convention** — confirm `test_data/output/test_output.png` still matches what the notebook produces after any functional changes (README calls out this input/output pairing as a core requirement).
+- [x] **Verify Binder still works** — `requirements.txt` now includes `jupyter` (needed for a notebook kernel); the Binder/README/nbconvert notebook path is uniformly `segment_image.ipynb`; input/output data files exist and match the notebook's declared paths.
+- [x] **Align test-data convention** — confirmed `test_data/input/test_input.tif` and `test_data/output/test_output.png` exist and match the paths declared in `segment_image.ipynb`.
