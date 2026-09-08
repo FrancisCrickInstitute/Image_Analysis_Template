@@ -106,3 +106,27 @@ The Jupyter Notebook should open in your browser - follow the step-by-step instr
 #### Set up your repo to run on Binder
 
 [Binder](https://mybinder.org/) is a really nice way to allow people to run your Jupyter notebooks directly from GitHub - just [follow this handy guide from the Turing Institute](https://the-turing-way.netlify.app/communication/binder/zero-to-binder.html) to get your repo set up. To run the code in this template repo on Binder, click [here](https://mybinder.org/v2/gh/FrancisCrickInstitute/CALM_Template/HEAD?labpath=blob%2Fmain%2Fsegment_image.ipynb).
+
+## (Optional) Trello Integration
+
+A [GitHub Action](https://github.com/dalezak/github-commit-to-trello-card) is included to link commits and pull requests to Trello cards automatically. When you reference a card number in a commit or PR message using the `#<number>` pattern, the action attaches the commit/PR to the matching Trello card.
+
+For example:
+
+```
+git commit -m "Add thresholding example #123"
+```
+
+This attaches the commit to Trello card number `123`.
+
+### Setup
+
+The workflow (`.github/workflows/trello.yml`) is committed but requires your own Trello credentials, which must be added as GitHub Actions secrets (**Settings → Secrets and variables → Actions** in your repository). Add the following three repository secrets:
+
+| Secret | Description |
+|--------|-------------|
+| `TRELLO_KEY`   | Trello API key (from https://trello.com/app-key) |
+| `TRELLO_TOKEN` | Trello auth token (from https://trello.com/app-key → "generate a token") |
+| `TRELLO_BOARD` | Trello board ID (open the board URL with `.json` appended to find it) |
+
+Until these secrets are configured, the workflow will fail when a commit is pushed. If you do not want Trello integration in your fork, simply delete `.github/workflows/trello.yml`.
