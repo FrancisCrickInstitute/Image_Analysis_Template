@@ -1,4 +1,4 @@
-# CALM Template Repository
+# Image Analysis Template Repository
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/FrancisCrickInstitute/CALM_Template/HEAD?labpath=blob%2Fmain%2Fsegment_image.ipynb)
 [![Python 3.14](https://img.shields.io/badge/python-3.14-blue.svg)](https://www.python.org/downloads/release/python-3140/)
@@ -8,7 +8,7 @@
 
 ## Overview
 
-The CALM Template is designed to provide a starting point for researchers to publish and share their image analysis code effectively. This might include, but is not limited to...
+This template is designed to provide a starting point for researchers to publish and share their image analysis code effectively. This might include, but is not limited to...
 * ImageJ/FIJI Macros
 * CellProfiler pipelines
 * ilastik projects
