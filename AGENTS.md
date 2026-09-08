@@ -70,7 +70,7 @@ The notebook is also runnable via Binder (link in the README badge).
 Known issues to resolve when cleaning up this repository (each is already flagged above, consolidated here as a checklist):
 
 - [x] **Fix stale README step** — Step 3 of the README references `zebrafish_age_estimator.ipynb`, which does not exist. Point it at `segment_image.ipynb` (matching the Binder link and every other reference).
-- [ ] **Refresh notebook `language_info` metadata** — `segment_image.ipynb` currently reports Python `2.7.6` / `ipython2` / `pygments_lexer ipython2`. Update to reflect Python 3.11 (target environment per README).
+- [x] **Refresh notebook `language_info` metadata** — `segment_image.ipynb` currently reports Python `2.7.6` / `ipython2` / `pygments_lexer ipython2`. Update to reflect Python 3.11 (target environment per README).
 - [ ] **Add a `.gitignore`** — none exists. At minimum ignore Python artifacts (`__pycache__/`, `*.pyc`) and Jupyter runtime caches (`.ipynb_checkpoints/`). Note `.idea/` and `.crush/` are already covered by their own per-directory ignore files.
 - [ ] **Pin `requirements.txt` versions** — currently unpinned (`matplotlib`, `scikit-image`). Consider pinning to known-good versions for reproducible Binder launches.
 - [ ] **Verify Binder still works** — the badge/links depend on the cell IDs and notebook path; re-run after metadata and README edits.
